@@ -4,6 +4,9 @@
   "description": "source code backend dari ourofix",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "migration:down": "node src/configs/rollback.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
