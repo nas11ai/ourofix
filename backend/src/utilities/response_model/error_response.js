@@ -1,4 +1,4 @@
-const { API_VERSION } = require('../../src/configs/config');
+const { API_VERSION } = require('../../configs/config');
 
 class ErrorResponse {
   constructor(code, status, errors) {

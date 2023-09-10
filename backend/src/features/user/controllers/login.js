@@ -1,4 +1,4 @@
-const { SuccessResponse, DataDetails } = require('../../../../utilities/response_model');
+const { SuccessResponse, DataDetails } = require('../../../utilities/response_model');
 const { loginService } = require('../services');
 
 const loginController = async (req, res, next) => {

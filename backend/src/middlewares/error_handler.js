@@ -1,4 +1,4 @@
-const { ErrorResponse } = require('../../utilities/response_model');
+const { ErrorResponse } = require('../utilities/response_model');
 
 const errorHandler = (err, req, res) => {
   if (err instanceof ErrorResponse) {

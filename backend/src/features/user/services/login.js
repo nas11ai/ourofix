@@ -11,8 +11,8 @@ const {
   TOKEN_AUDIENCE,
 } = require('../../../configs/config');
 
-const generateErrorResponse = require('../../../../utilities/generate_error_response');
-const HttpStatus = require('../../../../utilities/http_status');
+const generateErrorResponse = require('../../../utilities/generate_error_response');
+const HttpStatus = require('../../../utilities/http_status');
 
 const loginService = async (req) => {
   const user = await User.findOne({

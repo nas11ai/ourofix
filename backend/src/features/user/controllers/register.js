@@ -1,4 +1,4 @@
-const { SuccessResponse, DataDetails } = require('../../../../utilities/response_model');
+const { SuccessResponse, DataDetails } = require('../../../utilities/response_model');
 const { registerService } = require('../services');
 
 const registerController = async (req, res, next) => {

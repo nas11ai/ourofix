@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const { User } = require('../../models');
-const HttpStatus = require('../../../../../utilities/http_status');
-const generateErrorResponse = require('../../../../../utilities/generate_error_response');
+const HttpStatus = require('../../../../utilities/http_status');
+const generateErrorResponse = require('../../../../utilities/generate_error_response');
 const registerService = require('../register');
 
 jest.mock('bcrypt');

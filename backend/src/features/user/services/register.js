@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 
 const { User } = require('../models');
 
-const generateErrorResponse = require('../../../../utilities/generate_error_response');
-const HttpStatus = require('../../../../utilities/http_status');
+const generateErrorResponse = require('../../../utilities/generate_error_response');
+const HttpStatus = require('../../../utilities/http_status');
 
 const registerService = async (req) => {
   const {
