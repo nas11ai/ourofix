@@ -4,12 +4,17 @@ const app = express();
 const { PORT } = require('./src/configs/config');
 const { connectToDatabase } = require('./src/configs/db');
 
+const errorHandler = require('./src/middlewares/error_handler');
+const usersRouter = require('./src/features/user/routes');
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('NA Database API is running 🥳');
+  res.send('Ourofix API is running 🥳');
 });
+
+app.use('/users', usersRouter);
 
 const main = async () => {
   await connectToDatabase();
@@ -20,3 +25,5 @@ const main = async () => {
 };
 
 main();
+
+app.use(errorHandler);
