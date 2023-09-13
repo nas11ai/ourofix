@@ -1,6 +1,6 @@
 const { ErrorResponse } = require('../utilities/response_model');
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   if (err instanceof ErrorResponse) {
     res.status(err.code).json(err);
     return;
