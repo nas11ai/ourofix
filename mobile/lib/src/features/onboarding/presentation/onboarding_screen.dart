@@ -20,7 +20,7 @@ class OnboardingScreen extends ConsumerWidget {
       backgroundColor: ThemeColor.primaryColor,
       body: ResponsiveCenter(
         maxContentWidth: 450,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -10,16 +10,17 @@ import 'package:mobile/src/constants/theme_colors.dart';
 import 'package:mobile/src/features/login/presentation/login_screen_controller.dart';
 import 'package:mobile/src/routing/app_router.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends ConsumerStatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final GlobalKey<FormState> _loginForm = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscureText = true;
 
@@ -50,6 +51,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // }
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.goNamed(AppRoute.login.name),
+        ),
+      ),
       body: ResponsiveCenter(
         maxContentWidth: 450,
         padding: const EdgeInsets.all(Sizes.p32),
@@ -57,7 +64,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              gapH48,
+              gapH32,
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -66,13 +73,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                   children: const [
                     TextSpan(
-                      text: 'Ayo kita ',
+                      text: 'Sign ',
                       style: TextStyle(
                           color: ThemeColor
                               .primaryTextColor), // Atur warna teks yang berbeda
                     ),
                     TextSpan(
-                      text: 'mulai!',
+                      text: 'Up',
                       style: TextStyle(
                           color: ThemeColor
                               .secondaryColor), // Atur warna teks yang berbeda
@@ -82,7 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               gapH16,
               Text(
-                'Login agar bisa mengakses',
+                'Daftarkan akunmu untuk',
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
@@ -91,7 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
               gapH4,
               Text(
-                'layanan dari Ourofix',
+                'bisa mengakses layanan kami',
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
@@ -111,6 +118,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Username tidak boleh kosong';
+                        }
+                        return null;
+                      },
+                    ),
+                    gapH16,
+                    CustomTextField(
+                      controller: _emailController,
+                      labelText: 'Email',
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email tidak boleh kosong';
+                        }
+                        if (!(value.isValidEmail)) {
+                          return 'Email tidak valid';
                         }
                         return null;
                       },
@@ -139,7 +160,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: PrimaryButton(
-                        text: 'Login',
+                        text: 'Register',
                         isLoading: state.isLoading,
                         onPressed: state.isLoading
                             ? null
@@ -152,7 +173,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     );
                                 if (context.mounted) {
                                   // go to sign in page after completing onboarding
-                                  context.goNamed(AppRoute.home.name);
+                                  context.goNamed(AppRoute.login.name);
                                 }
                               },
                       ),
@@ -161,30 +182,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               gapH64,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Belum punya akun?',
-                  ),
-                  gapW4,
-                  InkWell(
-                    onTap: () {
-                      // Aksi ketika teks "Daftar disini" diklik
-                      context.goNamed(AppRoute.register.name);
-                    },
-                    child: const Text(
-                      'Daftar disini',
-                      style: TextStyle(
-                        color: ThemeColor
-                            .primaryColor, // Atur warna teks sesuai kebutuhan Anda
-                        decoration: TextDecoration
-                            .underline, // Memberi efek garis bawah pada teks
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ],
           ),
         ),

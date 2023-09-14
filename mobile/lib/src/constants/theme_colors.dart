@@ -7,4 +7,5 @@ class ThemeColor {
   static const backgroundColor = Color(0xFFFFFFFF);
   static const primaryTextColor = Color(0xFF000000);
   static const secondaryTextColor = Color(0xFFFFFFFF);
+  static const errorColor = Color(0xFFB00020);
 }
