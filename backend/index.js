@@ -1,4 +1,5 @@
 const express = require('express');
+const ngrok = require('ngrok');
 
 const app = express();
 const { PORT } = require('./src/configs/config');
@@ -22,6 +23,9 @@ const main = async () => {
     // eslint-disable-next-line no-console
     // console.log(`Server is running on port ${PORT}`);
   });
+  const url = await ngrok.connect(PORT);
+  // eslint-disable-next-line no-console
+  console.log(url);
 };
 
 main();
