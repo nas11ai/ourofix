@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:mobile/src/features/login/domain/login_request.dart';
-import 'package:mobile/src/features/login/domain/login_response.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:mobile/src/features/login/application/login_service.dart';
+import 'package:mobile/src/features/login/domain/login_request.dart';
+import 'package:mobile/src/features/login/domain/login_response.dart';
 
 part 'login_repository.g.dart';
 
