@@ -8,6 +8,8 @@ part 'login_response.g.dart';
 @freezed
 class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
+    @JsonKey(name: 'code') required int code,
+    @JsonKey(name: 'status') required String status,
     @JsonKey(name: 'data') @Default(null) LoginData? data,
   }) = _LoginResponse;
 
