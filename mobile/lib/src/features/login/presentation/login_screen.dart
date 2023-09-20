@@ -27,28 +27,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(loginControllerProvider);
 
-    // Future<void> handleLogin(BuildContext context) async {
-    //   if (_loginForm.currentState!.validate()) {
-    //     final username = _usernameController.text;
-    //     final password = _passwordController.text;
-
-    //     try {
-    //       // Call the login method from your repository
-    //       await loginRepository.login(username, password);
-
-    //       // Successful login, navigate to the next screen or perform other actions
-    //       // context.goNamed(AppRoute.home.name);
-    //     } catch (e) {
-    //       // Handle login errors, e.g., display an error message
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //         const SnackBar(
-    //           content: Text('Login failed. Please check your credentials.'),
-    //         ),
-    //       );
-    //     }
-    //   }
-    // }
-
     return Scaffold(
       body: ResponsiveCenter(
         maxContentWidth: 450,
