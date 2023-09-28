@@ -31,7 +31,9 @@ class ProfileScreen extends StatelessWidget {
               icon: const Icon(Icons.notifications,
                   color: ThemeColor.primaryColor),
               onPressed: () {
-                // Aksi ketika tombol notifikasi ditekan
+                if (context.mounted) {
+                  context.goNamed(AppRoute.notification.name);
+                }
               },
             ),
           ],

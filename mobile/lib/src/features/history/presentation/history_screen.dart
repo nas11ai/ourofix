@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/app_router.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -17,6 +19,17 @@ class HistoryScreen extends StatelessWidget {
               Tab(text: 'Sudah Lunas'),
             ],
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications,
+                  color: ThemeColor.tertiaryColor),
+              onPressed: () {
+                if (context.mounted) {
+                  context.goNamed(AppRoute.notification.name);
+                }
+              },
+            ),
+          ],
         ),
         body: const Padding(
           padding: EdgeInsets.only(top: 8.0),

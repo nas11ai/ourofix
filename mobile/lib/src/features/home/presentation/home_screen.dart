@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/app_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -18,7 +20,9 @@ class HomeScreen extends ConsumerWidget {
             icon:
                 const Icon(Icons.notifications, color: ThemeColor.primaryColor),
             onPressed: () {
-              // Aksi ketika tombol notifikasi ditekan
+              if (context.mounted) {
+                context.goNamed(AppRoute.notification.name);
+              }
             },
           ),
         ],

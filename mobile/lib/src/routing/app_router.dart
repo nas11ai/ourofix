@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/src/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/src/features/chat/presentation/chat_screen.dart';
 import 'package:mobile/src/features/history/presentation/history_screen.dart';
+import 'package:mobile/src/features/notification/presentation/notification_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_email_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_password_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_username_screen.dart';
@@ -29,6 +30,7 @@ enum AppRoute {
   onboarding,
   login,
   register,
+  notification,
   home,
   order,
   history,
@@ -73,6 +75,13 @@ GoRouter goRouter(GoRouterRef ref) {
         name: AppRoute.order.name,
         pageBuilder: (context, state) => const NoTransitionPage(
           child: OrderScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/notification',
+        name: AppRoute.notification.name,
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: NotificationScreen(),
         ),
       ),
       StatefulShellRoute.indexedStack(
