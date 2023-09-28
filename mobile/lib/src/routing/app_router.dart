@@ -7,6 +7,7 @@ import 'package:mobile/src/features/onboarding/presentation/onboarding_screen.da
 import 'package:mobile/src/features/login/presentation/login_screen.dart';
 import 'package:mobile/src/features/register/presentation/register_screen.dart';
 import 'package:mobile/src/features/home/presentation/home_screen.dart';
+import 'package:mobile/src/features/home/presentation/order_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -22,6 +23,7 @@ enum AppRoute {
   login,
   register,
   home,
+  order,
   chat,
   profile,
 }
@@ -68,7 +70,13 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: HomeScreen(),
                 ),
-                routes: const [],
+              ),
+              GoRoute(
+                path: '/order',
+                name: AppRoute.order.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: OrderScreen(),
+                ),
               ),
             ],
           ),

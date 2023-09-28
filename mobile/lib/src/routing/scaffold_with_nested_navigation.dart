@@ -4,7 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/src/common_widgets/custom_navigation_bar.dart'
     // ignore: library_prefixes
     as CustomNavBar;
+import 'package:mobile/src/constants/location.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/app_router.dart';
+
+final List<AppRoute> routesToHideScaffold = [
+  AppRoute.order,
+];
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
@@ -29,19 +35,18 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    if (size.width < 450) {
-      return ScaffoldWithNavigationBar(
-        body: navigationShell,
-        currentIndex: navigationShell.currentIndex,
-        onDestinationSelected: _goBranch,
-      );
-    } else {
-      return ScaffoldWithNavigationRail(
-        body: navigationShell,
-        currentIndex: navigationShell.currentIndex,
-        onDestinationSelected: _goBranch,
-      );
-    }
+
+    return size.width < 450
+        ? ScaffoldWithNavigationBar(
+            body: navigationShell,
+            currentIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          )
+        : ScaffoldWithNavigationRail(
+            body: navigationShell,
+            currentIndex: navigationShell.currentIndex,
+            onDestinationSelected: _goBranch,
+          );
   }
 }
 
@@ -58,51 +63,67 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentRouteName = GoRouter.of(context).location();
+
+    final isHiddenRoute = routesToHideScaffold.any(
+      (route) => '/${route.name}' == currentRouteName,
+    );
+
     return Scaffold(
       body: body,
-      floatingActionButton: Container(
-        margin: EdgeInsets.only(
-          left: MediaQuery.of(context).size.height * 0.02,
-        ),
-        height: MediaQuery.of(context).size.height * 0.07,
-        child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: ThemeColor.secondaryColor,
-            child: const Icon(Icons.add),
+      floatingActionButton: Visibility(
+        visible: !isHiddenRoute,
+        child: Container(
+          margin: EdgeInsets.only(
+            left: MediaQuery.of(context).size.height * 0.02,
+          ),
+          height: MediaQuery.of(context).size.height * 0.07,
+          child: FittedBox(
+            child: FloatingActionButton(
+              onPressed: () {
+                if (context.mounted) {
+                  context.goNamed(AppRoute.order.name);
+                }
+              },
+              backgroundColor: ThemeColor.secondaryColor,
+              child: const Icon(Icons.add),
+            ),
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomNavBar.CustomNavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: onDestinationSelected,
-        destinations: [
-          CustomNavBar.NavigationDestination(
-            iconData: Icons.home,
-            selectedIconData: Icons.home,
-            label: 'Home',
+      bottomNavigationBar: Visibility(
+        visible: !isHiddenRoute,
+        child: CustomNavBar.CustomNavigationBar(
+          selectedIndex: currentIndex,
+          onDestinationSelected: onDestinationSelected,
+          destinations: [
+            CustomNavBar.NavigationDestination(
+              iconData: Icons.home,
+              selectedIconData: Icons.home,
+              label: 'Home',
+            ),
+            CustomNavBar.NavigationDestination(
+              iconData: Icons.history,
+              selectedIconData: Icons.history,
+              label: 'Riwayat',
+            ),
+            CustomNavBar.NavigationDestination(
+              iconData: Icons.chat_bubble,
+              selectedIconData: Icons.chat_bubble,
+              label: 'Chat',
+            ),
+            CustomNavBar.NavigationDestination(
+              iconData: Icons.person,
+              selectedIconData: Icons.person,
+              label: 'Profil',
+            ),
+          ],
+          backgroundColor: ThemeColor.primaryColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16.0),
+            topRight: Radius.circular(16.0),
           ),
-          CustomNavBar.NavigationDestination(
-            iconData: Icons.history,
-            selectedIconData: Icons.history,
-            label: 'Riwayat',
-          ),
-          CustomNavBar.NavigationDestination(
-            iconData: Icons.chat_bubble,
-            selectedIconData: Icons.chat_bubble,
-            label: 'Chat',
-          ),
-          CustomNavBar.NavigationDestination(
-            iconData: Icons.person,
-            selectedIconData: Icons.person,
-            label: 'Profil',
-          ),
-        ],
-        backgroundColor: ThemeColor.primaryColor,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16.0),
-          topRight: Radius.circular(16.0),
         ),
       ),
     );
@@ -123,6 +144,24 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(
+          left: MediaQuery.of(context).size.height * 0.02,
+        ),
+        height: MediaQuery.of(context).size.height * 0.07,
+        child: FittedBox(
+          child: FloatingActionButton(
+            onPressed: () {
+              if (context.mounted) {
+                context.goNamed(AppRoute.order.name);
+              }
+            },
+            backgroundColor: ThemeColor.secondaryColor,
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Row(
         children: [
           NavigationRail(
