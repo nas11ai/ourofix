@@ -3,6 +3,7 @@ import 'package:mobile/src/constants/theme_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
+  final int maxLines;
   final String labelText;
   final String hintText;
   final IconData? prefixIcon;
@@ -22,7 +23,8 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.onChanged,
     this.validator,
-    this.toggleObscureText, // Tambahkan parameter ini
+    this.toggleObscureText,
+    this.maxLines = 1,
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class CustomTextField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+      maxLines: maxLines,
       onChanged: onChanged,
       validator: validator,
       style: const TextStyle(color: ThemeColor.primaryColor),
