@@ -8,9 +8,10 @@ import 'package:mobile/src/constants/location.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
 import 'package:mobile/src/routing/app_router.dart';
 
-final List<AppRoute> routesToHideScaffold = [
-  AppRoute.order,
-];
+// final List<AppRoute> routesToHideScaffold = [
+//   AppRoute.order,
+//   AppRoute.chatDetail,
+// ];
 
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
@@ -65,9 +66,15 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentRouteName = GoRouter.of(context).location();
 
-    final isHiddenRoute = routesToHideScaffold.any(
-      (route) => '/${route.name}' == currentRouteName,
-    );
+    // final isHiddenRoute = routesToHideScaffold.any(
+    //   (route) {
+    //     int count = currentRouteName.split('/').length - 1;
+
+    //     return count > 1;
+    //   },
+    // );
+
+    final isHiddenRoute = (currentRouteName.split('/').length - 1) > 1;
 
     return Scaffold(
       body: body,

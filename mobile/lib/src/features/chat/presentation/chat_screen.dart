@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/app_router.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -9,8 +11,8 @@ class ChatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Dummy data untuk daftar pesan
     final List<Message> messages = [
-      Message('A', 'Alice', 'Halo, apa kabar?'),
-      Message('B', 'Bob', 'Hai! Saya baik. Bagaimana denganmu?'),
+      Message('1', 'A', 'Alice', 'Halo apa kabar?'),
+      Message('2', 'B', 'Bob', 'Hai! Saya baik. Bagaimana denganmu?'),
       // Tambahkan pesan lainnya di sini
     ];
 
@@ -54,6 +56,8 @@ class ChatScreen extends ConsumerWidget {
               // Tambahkan logika untuk menavigasi ke obrolan penuh di sini
               onTap: () {
                 // Tambahkan logika untuk menavigasi ke obrolan penuh atau tindakan lainnya di sini
+                context.goNamed(AppRoute.chatDetail.name,
+                    pathParameters: {'messageId': message.id});
               },
             );
           },
@@ -64,9 +68,15 @@ class ChatScreen extends ConsumerWidget {
 }
 
 class Message {
+  final String id;
   final String avatar;
   final String senderName;
   final String messagePreview;
 
-  Message(this.avatar, this.senderName, this.messagePreview);
+  Message(
+    this.id,
+    this.avatar,
+    this.senderName,
+    this.messagePreview,
+  );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/src/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/src/features/chat/presentation/chat_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_email_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_password_screen.dart';
@@ -31,6 +32,7 @@ enum AppRoute {
   order,
   history,
   chat,
+  chatDetail,
   profile,
   editUsername,
   editEmail,
@@ -110,6 +112,20 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: ChatScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: ':messageId',
+                    name: AppRoute.chatDetail.name,
+                    pageBuilder: (context, state) {
+                      final messageId = state.pathParameters['messageId']!;
+                      return MaterialPage(
+                        child: ChatDetailScreen(
+                          messageId: messageId,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),
