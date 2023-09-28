@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/src/features/profile/presentation/edit_username.dart';
 import 'package:mobile/src/features/profile/presentation/profile_screen.dart';
 import 'package:mobile/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -123,7 +124,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     path: 'username/edit',
                     name: AppRoute.editUsername.name,
                     pageBuilder: (context, state) => const NoTransitionPage(
-                      child: Placeholder(),
+                      child: EditUsernameScreen(),
                     ),
                   ),
                   GoRoute(
