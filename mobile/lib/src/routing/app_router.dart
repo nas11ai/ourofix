@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/src/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/src/features/chat/presentation/chat_screen.dart';
+import 'package:mobile/src/features/history/presentation/history_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_email_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_password_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_username_screen.dart';
@@ -98,7 +99,7 @@ GoRouter goRouter(GoRouterRef ref) {
                 path: '/history',
                 name: AppRoute.history.name,
                 pageBuilder: (context, state) => const NoTransitionPage(
-                  child: Placeholder(),
+                  child: HistoryScreen(),
                 ),
               ),
             ],
