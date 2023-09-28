@@ -28,6 +28,9 @@ enum AppRoute {
   history,
   chat,
   profile,
+  editUsername,
+  editEmail,
+  editPassword,
 }
 
 @riverpod
@@ -58,6 +61,13 @@ GoRouter goRouter(GoRouterRef ref) {
           child: RegisterScreen(),
         ),
       ),
+      GoRoute(
+        path: '/order',
+        name: AppRoute.order.name,
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: OrderScreen(),
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
@@ -71,13 +81,6 @@ GoRouter goRouter(GoRouterRef ref) {
                 name: AppRoute.home.name,
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: HomeScreen(),
-                ),
-              ),
-              GoRoute(
-                path: '/order',
-                name: AppRoute.order.name,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: OrderScreen(),
                 ),
               ),
             ],
@@ -115,6 +118,29 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: ProfileScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: 'username/edit',
+                    name: AppRoute.editUsername.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: Placeholder(),
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'email/edit',
+                    name: AppRoute.editEmail.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: Placeholder(),
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'password/edit',
+                    name: AppRoute.editPassword.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: Placeholder(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
