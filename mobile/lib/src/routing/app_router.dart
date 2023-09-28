@@ -24,6 +24,7 @@ enum AppRoute {
   register,
   home,
   order,
+  history,
   chat,
   profile,
 }
@@ -80,8 +81,44 @@ GoRouter goRouter(GoRouterRef ref) {
               ),
             ],
           ),
+          StatefulShellBranch(
+            navigatorKey: _historyNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/history',
+                name: AppRoute.history.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: LoginScreen(),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _chatNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/chat',
+                name: AppRoute.chat.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: LoginScreen(),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/profile',
+                name: AppRoute.profile.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: LoginScreen(),
+                ),
+              ),
+            ],
+          ),
         ],
-      )
+      ),
     ],
   );
 }
