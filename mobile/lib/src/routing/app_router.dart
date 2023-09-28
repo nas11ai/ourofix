@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,7 +7,6 @@ import 'package:mobile/src/features/onboarding/presentation/onboarding_screen.da
 import 'package:mobile/src/features/login/presentation/login_screen.dart';
 import 'package:mobile/src/features/register/presentation/register_screen.dart';
 import 'package:mobile/src/features/home/presentation/home_screen.dart';
-// import 'package:starter_architecture_flutter_firebase/src/routing/scaffold_with_nested_navigation.dart';
 
 part 'app_router.g.dart';
 
@@ -54,13 +54,26 @@ GoRouter goRouter(GoRouterRef ref) {
           child: RegisterScreen(),
         ),
       ),
-      GoRoute(
-        path: '/home',
-        name: AppRoute.home.name,
-        pageBuilder: (context, state) => const NoTransitionPage(
-          child: HomeScreen(),
-        ),
-      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: _homeNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/home',
+                name: AppRoute.home.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: HomeScreen(),
+                ),
+                routes: const [],
+              ),
+            ],
+          ),
+        ],
+      )
     ],
   );
 }
