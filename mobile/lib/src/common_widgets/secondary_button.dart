@@ -16,19 +16,22 @@ class SecondaryButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: ThemeColor.secondaryColor,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         ),
         onPressed: onPressed,
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : Text(
-                text,
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge!
-                    .copyWith(color: ThemeColor.primaryColor),
-              ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: isLoading
+              ? const CircularProgressIndicator()
+              : Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: ThemeColor.primaryColor),
+                ),
+        ),
       ),
     );
   }

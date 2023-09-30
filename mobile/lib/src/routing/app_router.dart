@@ -71,13 +71,6 @@ GoRouter goRouter(GoRouterRef ref) {
         ),
       ),
       GoRoute(
-        path: '/order',
-        name: AppRoute.order.name,
-        pageBuilder: (context, state) => const NoTransitionPage(
-          child: OrderScreen(),
-        ),
-      ),
-      GoRoute(
         path: '/notification',
         name: AppRoute.notification.name,
         pageBuilder: (context, state) => const NoTransitionPage(
@@ -98,6 +91,15 @@ GoRouter goRouter(GoRouterRef ref) {
                 pageBuilder: (context, state) => const NoTransitionPage(
                   child: HomeScreen(),
                 ),
+                routes: [
+                  GoRoute(
+                    path: 'order',
+                    name: AppRoute.order.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: OrderScreen(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

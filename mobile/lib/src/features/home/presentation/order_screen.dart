@@ -9,6 +9,7 @@ import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/common_widgets/secondary_button.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/features/home/presentation/home_controller.dart';
 import 'package:mobile/src/routing/app_router.dart';
 
 // Definisikan enum untuk jenis perangkat
@@ -69,7 +70,11 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           leading: IconButton(
               onPressed: () {
                 if (context.mounted) {
-                  context.goNamed(AppRoute.home.name);
+                  ref.read(selectedIndexControllerProvider.notifier).clear();
+                  ref
+                      .read(selectedIndexControllerProvider.notifier)
+                      .updateNavbarVisibility();
+                  context.pop();
                 }
               },
               icon: const Icon(
