@@ -10,14 +10,11 @@ import 'package:mobile/src/common_widgets/secondary_button.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
 import 'package:mobile/src/features/home/presentation/home_controller.dart';
-import 'package:mobile/src/routing/app_router.dart';
 
-// Definisikan enum untuk jenis perangkat
 const List<String> list = <String>[
-  'Pilih Jenis Device',
   'Laptop',
   'PC',
-  'Hand'
+  'Hand',
 ];
 
 class OrderScreen extends ConsumerStatefulWidget {
@@ -45,7 +42,11 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
             child: FloatingActionButton(
               onPressed: () {
                 if (context.mounted) {
-                  context.goNamed(AppRoute.home.name);
+                  ref.read(selectedIndexControllerProvider.notifier).clear();
+                  ref
+                      .read(selectedIndexControllerProvider.notifier)
+                      .updateNavbarVisibility();
+                  context.pop();
                 }
               },
               backgroundColor: ThemeColor.primaryColor,
@@ -88,133 +89,160 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               gapH32,
-              Center(
-                child: SvgPicture.asset(
-                  'assets/order.svg',
-                  semanticsLabel: 'Order Service Image',
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                ),
-              ),
+              buildImagePlaceHolder(context),
               gapH32,
-              DropdownMenu<String>(
-                width: MediaQuery.of(context).size.width * 0.8,
-                initialSelection: list.first,
-                onSelected: (String? value) {
-                  // This is called when the user selects an item.
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                dropdownMenuEntries:
-                    list.map<DropdownMenuEntry<String>>((String value) {
-                  return DropdownMenuEntry<String>(value: value, label: value);
-                }).toList(),
-              ),
+              buildDropDownMenu(context),
               gapH32,
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: CustomTextField(
-                  controller: _keluhanController,
-                  maxLines: 7,
-                  labelText: 'Masukkan Keluhan Anda',
-                  validator: (value) {
-                    return null;
-                  },
-                ),
-              ),
+              buildTextFormField(context),
               gapH32,
-              SecondaryButton(
-                text: 'Pilih Foto',
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Pilih Sumber Gambar"),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text("Kamera"),
-                            onPressed: () {
-                              _getImageFromCamera();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            child: const Text("Galeri"),
-                            onPressed: () {
-                              _getImageFromGallery();
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              gapH32,
-              // Tambahkan ListView.builder di sini
-              Padding(
-                padding: const EdgeInsets.only(bottom: 32.0),
-                child: Visibility(
-                  visible: selectedImages.isNotEmpty,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: (selectedImages.length / 3).ceil() *
-                        116.0, // 100 (tinggi gambar) + 8 (mainAxisSpacing)
-                    child: DottedBorder(
-                        color: ThemeColor.primaryColor,
-                        strokeWidth: 1,
-                        radius: const Radius.circular(16.0),
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: Stack(
-                              children: [
-                                GridView.builder(
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount:
-                                        3, // Sesuaikan jumlah kolom sesuai kebutuhan
-                                    crossAxisSpacing:
-                                        8.0, // Sesuaikan jarak antar kolom sesuai kebutuhan
-                                    mainAxisSpacing:
-                                        8.0, // Sesuaikan jarak antar baris sesuai kebutuhan
-                                  ),
-                                  itemCount: selectedImages.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Image.file(
-                                      File(selectedImages[index].path),
-                                      width:
-                                          100, // Sesuaikan ukuran gambar sesuai kebutuhan
-                                      height: 100,
-                                    );
-                                  },
-                                ),
-                                Positioned(
-                                  top: 0.0,
-                                  left: 0.0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        selectedImages = [];
-                                      });
-                                    },
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: ThemeColor.errorColor,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ))),
-                  ),
-                ),
-              ),
+              buildImagePicker(context),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  SecondaryButton buildImagePicker(BuildContext context) {
+    return SecondaryButton(
+      text: 'Pilih Foto',
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Pilih Sumber Gambar"),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("Kamera"),
+                  onPressed: () {
+                    _getImageFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text("Galeri"),
+                  onPressed: () {
+                    _getImageFromGallery();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  SizedBox buildTextFormField(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.8,
+      child: CustomTextField(
+        controller: _keluhanController,
+        maxLines: 7,
+        labelText: 'Masukkan Keluhan Anda',
+        validator: (value) {
+          return null;
+        },
+      ),
+    );
+  }
+
+  DropdownMenu<String> buildDropDownMenu(BuildContext context) {
+    return DropdownMenu<String>(
+      width: MediaQuery.of(context).size.width * 0.8,
+      initialSelection: list.first,
+      label: const Text(
+        'Pilih Jenis Device',
+        style: TextStyle(color: ThemeColor.primaryColor),
+      ),
+      textStyle: const TextStyle(color: ThemeColor.primaryColor),
+      onSelected: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
+        return DropdownMenuEntry<String>(value: value, label: value);
+      }).toList(),
+    );
+  }
+
+  Visibility buildImagePlaceHolder(BuildContext context) {
+    return Visibility(
+      replacement: getImagePlaceholder(context),
+      visible: selectedImages.isNotEmpty,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.1,
+        ),
+        child: SizedBox(
+          height: (selectedImages.length / 3).ceil() *
+              (MediaQuery.of(context).size.height *
+                  0.2), // 100 (tinggi gambar) + 8 (mainAxisSpacing)
+          child: DottedBorder(
+            color: ThemeColor.primaryColor,
+            strokeWidth: 1,
+            radius: const Radius.circular(16.0),
+            child: buildImageView(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Center getImagePlaceholder(BuildContext context) {
+    return Center(
+      child: SvgPicture.asset(
+        'assets/order.svg',
+        semanticsLabel: 'Order Service Image',
+        height: MediaQuery.of(context).size.height * 0.2,
+        width: MediaQuery.of(context).size.width * 0.8,
+      ),
+    );
+  }
+
+  Padding buildImageView() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Stack(
+        children: [
+          GridView.builder(
+            padding: const EdgeInsets.only(top: 32.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, // Sesuaikan jumlah kolom sesuai kebutuhan
+              crossAxisSpacing:
+                  8.0, // Sesuaikan jarak antar kolom sesuai kebutuhan
+              mainAxisSpacing:
+                  8.0, // Sesuaikan jarak antar baris sesuai kebutuhan
+            ),
+            itemCount: selectedImages.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Image.file(
+                File(selectedImages[index].path),
+                width: 100, // Sesuaikan ukuran gambar sesuai kebutuhan
+                height: 100,
+              );
+            },
+          ),
+          Positioned(
+            top: -16.0,
+            left: 0.0,
+            child: IconButton(
+              onPressed: () {
+                setState(() {
+                  selectedImages = [];
+                });
+              },
+              icon: const Icon(
+                Icons.close,
+                color: ThemeColor.errorColor,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
