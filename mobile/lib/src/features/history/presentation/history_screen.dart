@@ -65,8 +65,13 @@ class ServiceHistoryTab extends StatelessWidget {
     final filteredServices =
         services.where((service) => service.isPaid == isPaid).toList();
 
-    return ListView.builder(
+    return ListView.separated(
       itemCount: filteredServices.length,
+      separatorBuilder: (context, index) {
+        return const Divider(
+          thickness: 1.0,
+        );
+      },
       itemBuilder: (BuildContext context, int index) {
         final service = filteredServices[index];
         return ListTile(
@@ -89,17 +94,10 @@ class ServiceHistoryTab extends StatelessWidget {
             ),
           ),
           title: Text(service.deviceName),
-          subtitle: Container(
-            padding: const EdgeInsets.all(4), // Padding latar belakang subtitle
-            decoration: BoxDecoration(
+          subtitle: Text(
+            service.status,
+            style: TextStyle(
               color: getStatusBackgroundColor(service.status),
-              borderRadius: BorderRadius.circular(4), // Border radius subtitle
-            ),
-            child: Text(
-              service.status,
-              style: const TextStyle(
-                color: Colors.black, // Warna teks subtitle
-              ),
             ),
           ),
           trailing: ElevatedButton(
@@ -129,11 +127,11 @@ class ServiceHistoryTab extends StatelessWidget {
   Color getStatusBackgroundColor(String status) {
     switch (status) {
       case 'Selesai':
-        return Colors.lightGreen;
+        return Colors.green;
       case 'Sedang diperbaiki':
-        return Colors.lightBlue;
+        return Colors.blue;
       case 'Sedang dalam antrian':
-        return Colors.yellow;
+        return Colors.amber;
       default:
         return Colors.transparent; // Jika status tidak sesuai
     }
