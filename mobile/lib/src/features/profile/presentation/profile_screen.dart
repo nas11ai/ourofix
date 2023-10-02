@@ -70,7 +70,7 @@ class ProfileScreen extends StatelessWidget {
                         height: MediaQuery.sizeOf(context).width * 0.09,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                          color: Colors.grey.shade600,
+                          color: Colors.grey,
                         ),
                         child: IconButton(
                           padding: EdgeInsets.zero,
@@ -86,7 +86,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              gapH64,
+              gapH48,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -97,7 +97,7 @@ class ProfileScreen extends StatelessWidget {
                             const TextStyle(color: Colors.black),
                           ),
                     ),
-                    gapH16,
+                    gapH12,
                     customListTile(
                       context,
                       "Username",
@@ -108,7 +108,12 @@ class ProfileScreen extends StatelessWidget {
                         }
                       },
                     ),
-                    gapH16,
+                    Divider(
+                      thickness: 1.0,
+                      indent: MediaQuery.sizeOf(context).width * 0.042,
+                      endIndent: MediaQuery.sizeOf(context).width * 0.08,
+                    ),
+                    gapH12,
                     customListTile(
                       context,
                       "Email",
@@ -119,7 +124,12 @@ class ProfileScreen extends StatelessWidget {
                         }
                       },
                     ),
-                    gapH16,
+                    Divider(
+                      thickness: 1.0,
+                      indent: MediaQuery.sizeOf(context).width * 0.042,
+                      endIndent: MediaQuery.sizeOf(context).width * 0.08,
+                    ),
+                    gapH12,
                     customListTile(
                       context,
                       "Password",
@@ -130,10 +140,15 @@ class ProfileScreen extends StatelessWidget {
                         }
                       },
                     ),
+                    Divider(
+                      thickness: 1.0,
+                      indent: MediaQuery.sizeOf(context).width * 0.042,
+                      endIndent: MediaQuery.sizeOf(context).width * 0.08,
+                    ),
+                    gapH12,
                   ],
                 ),
               ),
-              gapH16,
               Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
