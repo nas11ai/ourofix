@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
 import 'package:mobile/src/routing/app_router.dart';
+import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -45,8 +46,13 @@ class ChatScreen extends ConsumerWidget {
             ),
           ],
         ),
-        body: ListView.builder(
+        body: ListView.separated(
           itemCount: messages.length,
+          separatorBuilder: (context, index) {
+            return const Divider(
+              thickness: 1.0,
+            );
+          },
           itemBuilder: (BuildContext context, int index) {
             final message = messages[index];
             return ListTile(
@@ -57,7 +63,7 @@ class ChatScreen extends ConsumerWidget {
               subtitle: Text(message.messagePreview),
               // Tambahkan logika untuk menavigasi ke obrolan penuh di sini
               onTap: () {
-                // Tambahkan logika untuk menavigasi ke obrolan penuh atau tindakan lainnya di sini
+                ref.read(navigationBarControllerProvider.notifier).hideNavBar();
                 context.goNamed(AppRoute.chatDetail.name,
                     pathParameters: {'messageId': message.id});
               },
