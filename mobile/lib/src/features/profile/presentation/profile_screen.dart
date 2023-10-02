@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
 import 'package:mobile/src/routing/app_router.dart';
+import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -104,6 +106,9 @@ class ProfileScreen extends StatelessWidget {
                       "john_doe",
                       () {
                         if (context.mounted) {
+                          ref
+                              .read(navigationBarControllerProvider.notifier)
+                              .hideNavBar();
                           context.goNamed(AppRoute.editUsername.name);
                         }
                       },
@@ -120,6 +125,9 @@ class ProfileScreen extends StatelessWidget {
                       "john_doe@gmail.com",
                       () {
                         if (context.mounted) {
+                          ref
+                              .read(navigationBarControllerProvider.notifier)
+                              .hideNavBar();
                           context.goNamed(AppRoute.editEmail.name);
                         }
                       },
@@ -136,6 +144,9 @@ class ProfileScreen extends StatelessWidget {
                       "**********",
                       () {
                         if (context.mounted) {
+                          ref
+                              .read(navigationBarControllerProvider.notifier)
+                              .hideNavBar();
                           context.goNamed(AppRoute.editPassword.name);
                         }
                       },
