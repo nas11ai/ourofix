@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
 class EditEmailScreen extends ConsumerStatefulWidget {
   const EditEmailScreen({super.key});
@@ -28,6 +29,9 @@ class _EditEmailScreenState extends ConsumerState<EditEmailScreen> {
           leading: IconButton(
               onPressed: () {
                 if (context.mounted) {
+                  ref
+                      .read(navigationBarControllerProvider.notifier)
+                      .showNavBar();
                   context.pop();
                 }
               },

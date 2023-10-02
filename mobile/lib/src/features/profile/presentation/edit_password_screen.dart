@@ -5,6 +5,7 @@ import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/strings.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
 class EditPasswordScreen extends ConsumerStatefulWidget {
   const EditPasswordScreen({super.key});
@@ -35,6 +36,9 @@ class _EditPasswordScreenState extends ConsumerState<EditPasswordScreen> {
           leading: IconButton(
               onPressed: () {
                 if (context.mounted) {
+                  ref
+                      .read(navigationBarControllerProvider.notifier)
+                      .showNavBar();
                   context.pop();
                 }
               },
