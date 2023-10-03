@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
 class ChatDetailScreen extends ConsumerWidget {
   final String messageId;
@@ -40,6 +41,7 @@ class ChatDetailScreen extends ConsumerWidget {
         leading: IconButton(
             onPressed: () {
               if (context.mounted) {
+                ref.read(navigationBarControllerProvider.notifier).showNavBar();
                 context.pop();
               }
             },
@@ -63,11 +65,9 @@ class ChatDetailScreen extends ConsumerWidget {
                 final textColor = isSender
                     ? ThemeColor.primaryColor
                     : ThemeColor.tertiaryColor;
-
-                return Padding(
-                  padding: isSender
-                      ? const EdgeInsets.fromLTRB(8.0, 8.0, 128.0, 8.0)
-                      : const EdgeInsets.fromLTRB(128.0, 8.0, 8.0, 8.0),
+                return Align(
+                  alignment:
+                      isSender ? Alignment.centerLeft : Alignment.centerRight,
                   child: Card(
                     color: bgColor,
                     elevation: 3,
@@ -76,18 +76,12 @@ class ChatDetailScreen extends ConsumerWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            msg.text,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        msg.text,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
