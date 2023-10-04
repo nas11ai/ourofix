@@ -65,22 +65,47 @@ class ChatDetailScreen extends ConsumerWidget {
                 final textColor = isSender
                     ? ThemeColor.primaryColor
                     : ThemeColor.tertiaryColor;
-                return Align(
-                  alignment:
-                      isSender ? Alignment.centerLeft : Alignment.centerRight,
-                  child: Card(
-                    color: bgColor,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        msg.text,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 16,
+                final bool isFirstItem = index == 0;
+
+                return Padding(
+                  padding: isSender
+                      ? isFirstItem
+                          ? const EdgeInsets.only(
+                              right: Sizes.p48,
+                              left: Sizes.p16,
+                            )
+                          : const EdgeInsets.only(
+                              right: Sizes.p48,
+                              left: Sizes.p16,
+                              top: Sizes.p16,
+                            )
+                      : isFirstItem
+                          ? const EdgeInsets.only(
+                              left: Sizes.p48,
+                              right: Sizes.p16,
+                            )
+                          : const EdgeInsets.only(
+                              left: Sizes.p48,
+                              right: Sizes.p16,
+                              top: Sizes.p16,
+                            ),
+                  child: Align(
+                    alignment:
+                        isSender ? Alignment.centerLeft : Alignment.centerRight,
+                    child: Card(
+                      color: bgColor,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          '${msg.text} ngentooooooooooooooooooooooooooooooooooooooooooooot',
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -161,7 +186,7 @@ final List<ChatMessage> messageList = [
   ChatMessage(
     id: '1',
     senderName: 'Alice',
-    text: 'Halo, apa kabar?',
+    text: 'Halo, apa kabar? tes 1 2 3',
     timestamp: DateTime.now().subtract(Duration(hours: 2)),
   ),
   ChatMessage(
