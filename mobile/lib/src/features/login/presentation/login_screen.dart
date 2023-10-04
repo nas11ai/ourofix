@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/common_widgets/primary_button.dart';
@@ -119,6 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: PrimaryButton(
                         text: 'Login',
                         isLoading: state.isLoading,
+                        isOutlined: false,
                         onPressed: state.isLoading
                             ? null
                             : () async {
@@ -129,7 +131,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       password: _passwordController.text,
                                     );
                                 if (context.mounted) {
-                                  // go to sign in page after completing onboarding
                                   context.goNamed(AppRoute.home.name);
                                 }
                               },
@@ -137,6 +138,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ],
                 ),
+              ),
+              gapH32,
+              const Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      thickness: 1.0,
+                    ),
+                  ),
+                  Text('atau', style: TextStyle(color: Colors.grey)),
+                  Expanded(
+                    child: Divider(
+                      thickness: 1.0,
+                    ),
+                  ),
+                ],
+              ),
+              gapH32,
+              PrimaryButton(
+                isOutlined: true,
+                text: 'Login dengan Google',
+                svgImage: SvgPicture.asset(
+                  'assets/icon/icons8-google.svg',
+                  width: MediaQuery.sizeOf(context).width * 0.1,
+                  height: MediaQuery.sizeOf(context).width * 0.1,
+                ),
+                onPressed: () {
+                  if (context.mounted) {
+                    context.goNamed(AppRoute.home.name);
+                  }
+                },
               ),
               gapH64,
               Row(
