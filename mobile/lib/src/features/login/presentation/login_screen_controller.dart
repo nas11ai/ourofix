@@ -36,23 +36,34 @@ class GoogleUser extends _$GoogleUser {
 }
 
 @riverpod
-FutureOr<UserCredential?> signInWithGoogle(SignInWithGoogleRef ref) async {
+Future<void> signInWithGoogle(SignInWithGoogleRef ref) async {
   final googleUser = await googleSignIn.signIn();
   if (googleUser == null) {
-    return null;
+    throw Exception("User Google tidak ditemukan");
   }
 
   ref.read(googleUserProvider.notifier).setAccount(googleUser);
 
-  // Obtain the auth details from the request
   final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-  // Create a new credential
   final credential = GoogleAuthProvider.credential(
     accessToken: googleAuth.accessToken,
     idToken: googleAuth.idToken,
   );
 
-  // Once signed in, return the UserCredential
-  return await ref.read(firebaseAuthProvider).signInWithCredential(credential);
+  final UserCredential userCredential =
+      await ref.read(firebaseAuthProvider).signInWithCredential(credential);
+
+  final isUserExist = await ref
+      .read(authRepositoryProvider)
+      .isUserExist(uid: userCredential.user!.uid);
+
+  if (!isUserExist) {
+    await ref.read(authRepositoryProvider).addNewUser(
+          uid: userCredential.user!.uid,
+          displayName: userCredential.user!.displayName,
+          profilePictureUrl: userCredential.user!.photoURL,
+          role: 'User',
+        );
+  }
 }
