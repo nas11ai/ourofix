@@ -21,6 +21,11 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 lib/src/constants/api.dart
+lib/src/constants/mobile_client_id.dart
+
+*firebase*
+google-services.json
+GoogleService-Info.plist
 
 # Flutter/Dart/Pub related
 **/doc/api/

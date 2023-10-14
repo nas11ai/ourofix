@@ -164,7 +164,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   width: MediaQuery.sizeOf(context).width * 0.1,
                   height: MediaQuery.sizeOf(context).width * 0.1,
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  var tes = await ref.read(signInWithGoogleProvider.future);
+
+                  print(tes);
+
                   if (context.mounted) {
                     context.goNamed(AppRoute.home.name);
                   }

@@ -48,6 +48,9 @@ dependencies:
   flutter_svg: ^2.0.7
   image_picker: ^1.0.4
   dotted_border: ^2.1.0
+  google_sign_in: ^6.1.5
+  firebase_auth: ^4.10.1
+  firebase_core: ^2.17.0
 
 dev_dependencies:
   retrofit_generator:
