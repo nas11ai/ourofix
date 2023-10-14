@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:mobile/src/features/chat/presentation/chat_detail_screen.dart';
 import 'package:mobile/src/features/chat/presentation/chat_screen.dart';
 import 'package:mobile/src/features/history/presentation/history_screen.dart';
 import 'package:mobile/src/features/notification/presentation/notification_screen.dart';
+import 'package:mobile/src/features/onboarding/data/onboarding_repository.dart';
 import 'package:mobile/src/features/profile/presentation/edit_email_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_password_screen.dart';
 import 'package:mobile/src/features/profile/presentation/edit_username_screen.dart';
 import 'package:mobile/src/features/profile/presentation/profile_screen.dart';
+import 'package:mobile/src/routing/go_router_refresh_stream.dart';
 import 'package:mobile/src/routing/scaffold_with_nested_navigation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -44,10 +47,39 @@ enum AppRoute {
 
 @riverpod
 GoRouter goRouter(GoRouterRef ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  final onboardingRepository = ref.watch(onboardingRepositoryProvider);
   return GoRouter(
-    initialLocation: '/onboarding',
+    initialLocation: '/login',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
+    redirect: (context, state) {
+      final didCompleteOnboarding = onboardingRepository.isOnboardingComplete();
+      final path = state.uri.path;
+      if (!didCompleteOnboarding) {
+        // Always check state.subloc before returning a non-null route
+        // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/redirection.dart#L78
+        if (path != '/onboarding') {
+          return '/onboarding';
+        }
+      }
+      final isLoggedIn = authRepository.currentUser != null;
+      if (isLoggedIn) {
+        if (path.startsWith('/login')) {
+          return '/home';
+        }
+      } else {
+        if (path.startsWith('/home') ||
+            path.startsWith('/notification') ||
+            path.startsWith('/history') ||
+            path.startsWith('/chat') ||
+            path.startsWith('/profile')) {
+          return '/login';
+        }
+      }
+      return null;
+    },
+    refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
       GoRoute(
         path: '/onboarding',

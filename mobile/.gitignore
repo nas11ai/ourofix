@@ -22,8 +22,9 @@ migrate_working_dir/
 #.vscode/
 lib/src/constants/api.dart
 lib/src/constants/mobile_client_id.dart
+lib/firebase_options.dart
 
-*firebase*
+firebase_app_id_file.json
 google-services.json
 GoogleService-Info.plist
 

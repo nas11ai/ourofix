@@ -1,5 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobile/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:mobile/src/features/login/data/login_repository.dart';
 
@@ -53,5 +54,5 @@ FutureOr<UserCredential?> signInWithGoogle(SignInWithGoogleRef ref) async {
   );
 
   // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
+  return await ref.read(firebaseAuthProvider).signInWithCredential(credential);
 }
