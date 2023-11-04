@@ -28,6 +28,10 @@ firebase_app_id_file.json
 google-services.json
 GoogleService-Info.plist
 
+key.properties
+mkey.jks
+upload-keystore.jks
+
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
