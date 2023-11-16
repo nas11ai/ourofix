@@ -29,7 +29,10 @@ const authMiddleware = (request, response, next) => {
   return firebase
     .auth()
     .verifyIdToken(token)
-    .then(() => next())
+    .then((decodedToken) => {
+      request.uid = decodedToken.uid;
+      next();
+    })
     .catch((error) => {
       const errorResponse = generateErrorResponse({
         name: 'JwtError',
