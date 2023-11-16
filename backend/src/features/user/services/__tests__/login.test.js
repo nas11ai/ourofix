@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { v4: uuidv4 } = require('uuid');
 const { User } = require('../../models');
-const { v4: uuidv4 } = require('uuid'); // Impor uuidv4
 const {
   REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_SECRET,
@@ -56,7 +57,7 @@ describe('loginService', () => {
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE,
         expiresIn: '10m', // Sesuai dengan konfigurasi
-      }
+      },
     );
     expect(jwt.sign).toHaveBeenCalledWith(
       { userId: user.id },
@@ -67,7 +68,7 @@ describe('loginService', () => {
         issuer: TOKEN_ISSUER,
         audience: TOKEN_AUDIENCE,
         expiresIn: '1d', // Sesuai dengan konfigurasi
-      }
+      },
     );
 
     expect(result).toEqual({

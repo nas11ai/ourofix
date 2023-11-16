@@ -2,7 +2,9 @@ const { ErrorResponse, ErrorDetails } = require('./response_model');
 const HttpStatus = require('./http_status');
 const ValidationError = require('./validation_error');
 
-const generateErrorResponse = ({ name, attribute, message, httpStatus = HttpStatus.BAD_REQUEST }) => {
+const generateErrorResponse = ({
+  name, attribute, message, httpStatus = HttpStatus.BAD_REQUEST,
+}) => {
   if (
     typeof name !== 'string'
     || typeof attribute !== 'string'

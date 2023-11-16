@@ -1,5 +1,5 @@
 const express = require('express');
-const ngrok = require('ngrok');
+// const ngrok = require('ngrok');
 
 const app = express();
 const { PORT } = require('./src/configs/config');

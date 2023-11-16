@@ -1,4 +1,4 @@
-const firebase = require("../configs/firebase");
+const firebase = require('../configs/firebase');
 const generateErrorResponse = require('../utilities/generate_error_response');
 const HttpStatus = require('../utilities/http_status');
 
@@ -14,7 +14,7 @@ const authMiddleware = (request, response, next) => {
     return response.status(errorResponse.code).json(errorResponse);
   }
 
-  if (headerToken && headerToken.split(" ")[0] !== "Bearer") {
+  if (headerToken && headerToken.split(' ')[0] !== 'Bearer') {
     const errorResponse = generateErrorResponse({
       name: 'JwtError',
       attribute: 'token',
@@ -24,9 +24,9 @@ const authMiddleware = (request, response, next) => {
     return response.status(errorResponse.code).json(errorResponse);
   }
 
-  const token = headerToken.split(" ")[1];
+  const token = headerToken.split(' ')[1];
 
-  firebase
+  return firebase
     .auth()
     .verifyIdToken(token)
     .then(() => next())
@@ -37,8 +37,8 @@ const authMiddleware = (request, response, next) => {
         message: error.message,
         httpStatus: HttpStatus.FORBIDDEN,
       });
-      response.status(errorResponse.code).json(errorResponse);
+      return response.status(errorResponse.code).json(errorResponse);
     });
-}
+};
 
 module.exports = authMiddleware;

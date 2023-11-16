@@ -17,9 +17,9 @@ const loginController = async (req, res, next) => {
     // });
 
     const response = new SuccessResponse(200, 'OK', new DataDetails('login', {
-      "user_role": userRole,
-      "access_token": newAccessToken,
-      "refresh_token": newRefreshToken,
+      user_role: userRole,
+      access_token: newAccessToken,
+      refresh_token: newRefreshToken,
     }));
 
     res.status(response.code).json(response);

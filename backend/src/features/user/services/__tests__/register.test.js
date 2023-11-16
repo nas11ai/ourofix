@@ -45,13 +45,17 @@ describe('registerService', () => {
       },
     };
 
+    let error;
+
     try {
       await registerService(req);
-    } catch (error) {
-      expect(error.name).toBe('ValidationError');
-      expect(error.attribute).toBe('username');
-      expect(error.message).toBe('username harus berupa string dan tidak boleh kosong!');
+    } catch (e) {
+      error = e;
     }
+
+    expect(error.name).toBe('ValidationError');
+    expect(error.attribute).toBe('username');
+    expect(error.message).toBe('username harus berupa string dan tidak boleh kosong!');
   });
 
   it('should return an error if username is already taken', async () => {
@@ -66,18 +70,22 @@ describe('registerService', () => {
 
     User.findOne.mockResolvedValue({ username: 'existingUser' });
 
+    let error;
+
     try {
       await registerService(req);
-    } catch (error) {
-      expect(error.name).toBe('RegisterError');
-      expect(error.attribute).toBe('username');
-      expect(error.message).toBe('username telah digunakan!');
-      expect(generateErrorResponse).toHaveBeenCalledWith({
-        name: 'RegisterError',
-        attribute: 'username',
-        message: 'username telah digunakan!',
-        httpStatus: HttpStatus.BAD_REQUEST,
-      });
+    } catch (e) {
+      error = e;
     }
+
+    expect(error.name).toBe('RegisterError');
+    expect(error.attribute).toBe('username');
+    expect(error.message).toBe('username telah digunakan!');
+    expect(generateErrorResponse).toHaveBeenCalledWith({
+      name: 'RegisterError',
+      attribute: 'username',
+      message: 'username telah digunakan!',
+      httpStatus: HttpStatus.BAD_REQUEST,
+    });
   });
 });
