@@ -41,6 +41,10 @@ Order.init({
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   },
+  complains: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 }, {
   sequelize,
   underscored: true,
