@@ -11,12 +11,12 @@ Order.init({
     primaryKey: true,
     unique: {
       args: true,
-      msg: 'ID device telah diambil!',
+      msg: 'ID order telah diambil!',
     },
     allowNull: false,
     validate: {
       notNull: {
-        msg: 'ID device tidak boleh kosong!',
+        msg: 'ID order tidak boleh kosong!',
       },
     },
   },
@@ -34,7 +34,7 @@ Order.init({
     allowNull: false,
     validate: {
       notNull: {
-        msg: 'Order\'s Device Type ID can\'t be empty',
+        msg: 'ID order tidak boleh kosong!',
       },
     },
     references: { model: 'device_types', key: 'id' },
