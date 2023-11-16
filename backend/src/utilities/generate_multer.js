@@ -37,7 +37,7 @@ const generateMulter = (assetType) => {
         const seconds = date.getSeconds().toString().padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
 
-        cb(null, `${req.body.username || req.params.username || req.params.category_name || req.body.name}_${formattedDate}_${file.originalname}`);
+        cb(null, `${req.body.username || req.params.username || req.params.category_name || req.body.name || req.uid}_${formattedDate}_${file.originalname}`);
       },
     }),
     fileFilter(req, file, cb) {
