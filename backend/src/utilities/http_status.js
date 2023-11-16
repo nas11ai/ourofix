@@ -1,5 +1,3 @@
-// httpStatus.js
-
 class HttpStatus {
   static BAD_REQUEST = {
     code: 400,
@@ -9,6 +7,11 @@ class HttpStatus {
   static UNAUTHORIZED = {
     code: 401,
     status: 'UNAUTHORIZED',
+  };
+
+  static FORBIDDEN = {
+    code: 403,
+    status: 'FORBIDDEN',
   };
 
   static NOT_FOUND = {

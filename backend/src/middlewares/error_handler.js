@@ -8,10 +8,9 @@ const errorHandler = (err, req, res, next) => {
   // TODO: ganti console ke log kalau sudah mau production
   // eslint-disable-next-line no-console
   console.error(err);
-  res.status(500).json({
-    name: err.name,
-    message: err.message,
-  });
+
+  const unknownErr = new ErrorResponse(500, INTERNAL_SERVER_ERROR, { message: err.message });
+  res.status(unknownErr.code).json(unknownErr);
 };
 
 module.exports = errorHandler;

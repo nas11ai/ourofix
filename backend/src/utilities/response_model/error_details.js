@@ -1,5 +1,5 @@
 class ErrorDetails extends Error {
-  constructor(name, attribute, message) {
+  constructor({ name, attribute, message }) {
     super(message);
     this.name = name;
     this.attribute = attribute;
