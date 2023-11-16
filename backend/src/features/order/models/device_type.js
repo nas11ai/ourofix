@@ -46,4 +46,4 @@ DeviceType.init({
   ],
 });
 
-module.exports = { DeviceType };
+module.exports = DeviceType;

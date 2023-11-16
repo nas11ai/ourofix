@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../utilities/response_model');
 
-const errorHandler = (err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (err, req, res, next) => {
   if (err instanceof ErrorResponse) {
     res.status(err.code).json(err);
     return;
