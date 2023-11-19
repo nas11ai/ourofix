@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,12 +11,14 @@ import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/common_widgets/secondary_button.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/features/authentication/data/firebase_auth_repository.dart';
+import 'package:mobile/src/features/home/data/order_repository.dart';
 import 'package:mobile/src/features/home/presentation/home_controller.dart';
 
-const List<String> list = <String>[
-  'Laptop',
-  'PC',
-  'Hand',
+const List<Map<String, String>> deviceList = [
+  {'id': 'd40356cc-064f-468e-808b-a10b29a50653', 'name': 'Laptop'},
+  {'id': '80e289d9-8483-4480-928a-8f9ceea96797', 'name': 'HP'},
+  {'id': 'dcc3f7b3-1d05-4365-89ba-3a5ba4c0281e', 'name': 'PC'},
 ];
 
 class OrderScreen extends ConsumerStatefulWidget {
@@ -25,7 +29,9 @@ class OrderScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderScreenState extends ConsumerState<OrderScreen> {
-  String dropdownValue = list.first;
+  final OrderRepository _orderRepository = OrderRepository(Dio());
+
+  String? selectedDeviceId = deviceList.first['id'];
   final TextEditingController _keluhanController = TextEditingController();
   List<XFile> selectedImages = [];
 
@@ -41,12 +47,17 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           child: FittedBox(
             child: FloatingActionButton(
               onPressed: () {
-                if (context.mounted) {
-                  ref.read(selectedIndexControllerProvider.notifier).clear();
-                  ref
-                      .read(selectedIndexControllerProvider.notifier)
-                      .updateNavbarVisibility();
-                  context.pop();
+                try {
+                  _submitOrder();
+                  if (context.mounted) {
+                    ref.read(selectedIndexControllerProvider.notifier).clear();
+                    ref
+                        .read(selectedIndexControllerProvider.notifier)
+                        .updateNavbarVisibility();
+                    context.pop();
+                  }
+                } catch (e) {
+                  print('error submitting order: $e');
                 }
               },
               backgroundColor: ThemeColor.primaryColor,
@@ -152,7 +163,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
   DropdownMenu<String> buildDropDownMenu(BuildContext context) {
     return DropdownMenu<String>(
       width: MediaQuery.of(context).size.width * 0.8,
-      initialSelection: list.first,
+      initialSelection: deviceList.first['name'],
       label: const Text(
         'Pilih Jenis Device',
         style: TextStyle(color: ThemeColor.primaryColor),
@@ -161,11 +172,17 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
       onSelected: (String? value) {
         // This is called when the user selects an item.
         setState(() {
-          dropdownValue = value!;
+          selectedDeviceId =
+              deviceList.firstWhere((device) => device['name'] == value)['id']!;
+          print('selectedDeviceId: $selectedDeviceId');
         });
       },
-      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value);
+      dropdownMenuEntries: deviceList
+          .map<DropdownMenuEntry<String>>((Map<String, String> value) {
+        return DropdownMenuEntry<String>(
+          value: value['name']!,
+          label: value['name']!,
+        );
       }).toList(),
     );
   }
@@ -263,5 +280,59 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
         selectedImages.add(image);
       });
     }
+  }
+
+  Future<void> _submitOrder() async {
+    var token =
+        await ref.read(firebaseAuthProvider).currentUser?.getIdToken(true);
+
+    if (token == null) {
+      final idTokenResult = await ref
+          .read(firebaseAuthProvider)
+          .currentUser
+          ?.getIdTokenResult(true);
+
+      token = idTokenResult?.token;
+    }
+
+    final String keluhan = _keluhanController.text;
+
+    final List<MultipartFile> photos =
+        await _convertImagesToMultipart(selectedImages);
+
+    await _orderRepository.submitOrder(
+      deviceTypeId: selectedDeviceId!,
+      complains: keluhan,
+      images: photos,
+      authorizationHeader: 'Bearer $token',
+    );
+
+    print('Order submitted successfully');
+  }
+
+  Future<List<MultipartFile>> _convertImagesToMultipart(
+      List<XFile> images) async {
+    final List<MultipartFile> multipartFiles = [];
+
+    for (final image in images) {
+      final fileBytes = await File(image.path).readAsBytes();
+      final String fileName = image.path.split('/').last;
+
+      if (!(fileName.endsWith('.jpg') ||
+          fileName.endsWith('.jpeg') ||
+          fileName.endsWith('.png'))) {
+        throw const FormatException('tipe file harus jpg/jpeg/png!');
+      }
+
+      final multipartFile = MultipartFile.fromBytes(
+        fileBytes,
+        filename: fileName,
+        contentType: MediaType('image', fileName.split('.').last),
+      );
+
+      multipartFiles.add(multipartFile);
+    }
+
+    return multipartFiles;
   }
 }
