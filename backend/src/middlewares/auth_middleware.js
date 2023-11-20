@@ -34,13 +34,7 @@ const authMiddleware = (request, response, next) => {
       next();
     })
     .catch((error) => {
-      const errorResponse = generateErrorResponse({
-        name: 'JwtError',
-        attribute: 'token',
-        message: error.message,
-        httpStatus: HttpStatus.FORBIDDEN,
-      });
-      return response.status(errorResponse.code).json(errorResponse);
+      next(error);
     });
 };
 
