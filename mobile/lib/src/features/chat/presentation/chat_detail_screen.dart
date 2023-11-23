@@ -3,197 +3,252 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/app_sizes.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/features/chat/data/chat_repository.dart';
+import 'package:mobile/src/features/chat/domain/message.dart';
+import 'package:mobile/src/features/chat/domain/user.dart';
+import 'package:mobile/src/features/chat/presentation/chat_screen_controller.dart';
+import 'package:mobile/src/features/chat/presentation/message_box.dart';
 import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
-class ChatDetailScreen extends ConsumerWidget {
+class ChatDetailScreen extends ConsumerStatefulWidget {
+  final String userId;
   final String messageId;
 
   const ChatDetailScreen({
     super.key,
+    required this.userId,
     required this.messageId,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Dapatkan pesan yang sesuai berdasarkan messageId
-    final ChatMessage? message = getMessageById(messageId);
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
+}
 
-    if (message == null) {
-      // Pesan tidak ditemukan, tampilkan pesan atau widget lain sesuai kebutuhan
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Pesan tidak ditemukan'),
-        ),
-        body: const Center(
-          child: Text('Pesan tidak ditemukan.'),
-        ),
-      );
-    }
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final chatRepository = ref.watch(chatRepositoryProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        titleTextStyle: Theme.of(context)
-            .textTheme
-            .titleLarge!
-            .copyWith(color: ThemeColor.primaryColor),
-        leading: IconButton(
-            onPressed: () {
-              if (context.mounted) {
-                ref.read(navigationBarControllerProvider.notifier).showNavBar();
-                context.pop();
-              }
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: ThemeColor.primaryColor,
-            )),
-        title: Text(message.senderName),
-      ),
-      body: Column(
-        children: [
-          gapH16,
-          Expanded(
-            child: ListView.builder(
-              itemCount: messageList.length,
-              itemBuilder: (context, index) {
-                final msg = messageList[index];
-                final isSender = msg.senderName == message.senderName;
-                final bgColor =
-                    isSender ? Colors.grey.shade400 : ThemeColor.primaryColor;
-                final textColor = isSender
-                    ? ThemeColor.primaryColor
-                    : ThemeColor.tertiaryColor;
-                final bool isFirstItem = index == 0;
+    // Fetch user and messages
+    chatRepository.getUserByUid(uid: widget.userId);
+    chatRepository.getMessages(receiverId: widget.userId);
 
-                return Padding(
-                  padding: isSender
-                      ? isFirstItem
-                          ? const EdgeInsets.only(
-                              right: Sizes.p48,
-                              left: Sizes.p16,
-                            )
-                          : const EdgeInsets.only(
-                              right: Sizes.p48,
-                              left: Sizes.p16,
-                              top: Sizes.p16,
-                            )
-                      : isFirstItem
-                          ? const EdgeInsets.only(
-                              left: Sizes.p48,
-                              right: Sizes.p16,
-                            )
-                          : const EdgeInsets.only(
-                              left: Sizes.p48,
-                              right: Sizes.p16,
-                              top: Sizes.p16,
-                            ),
-                  child: Align(
-                    alignment:
-                        isSender ? Alignment.centerLeft : Alignment.centerRight,
-                    child: Card(
-                      color: bgColor,
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+    final state = ref.watch(chatScreenControllerProvider);
+
+    return StreamBuilder<User?>(
+      stream: ref.read(chatRepositoryProvider).userByUid,
+      builder: (context, userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (userSnapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('User tidak ditemukan'),
+              leading: IconButton(
+                onPressed: () {
+                  if (context.mounted) {
+                    ref
+                        .read(navigationBarControllerProvider.notifier)
+                        .showNavBar();
+                    context.pop();
+                  }
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+            ),
+            body: Center(
+              child: Text('Error: ${userSnapshot.error}'),
+            ),
+          );
+        }
+
+        if (!userSnapshot.hasData || userSnapshot.data == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('User tidak ditemukan'),
+              leading: IconButton(
+                onPressed: () {
+                  if (context.mounted) {
+                    ref
+                        .read(navigationBarControllerProvider.notifier)
+                        .showNavBar();
+                    context.pop();
+                  }
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: ThemeColor.primaryColor,
+                ),
+              ),
+            ),
+            body: const Center(
+              child: Text('User tidak ditemukan.'),
+            ),
+          );
+        }
+
+        final User user = userSnapshot.data!;
+
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: ThemeColor.primaryColor),
+            leading: IconButton(
+              onPressed: () {
+                if (context.mounted) {
+                  ref
+                      .read(navigationBarControllerProvider.notifier)
+                      .showNavBar();
+                  context.pop();
+                }
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: ThemeColor.primaryColor,
+              ),
+            ),
+            title: Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(user.image),
+                  radius: 20,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                          color: ThemeColor.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text(
-                          '${msg.text} ngentooooooooooooooooooooooooooooooooooooooooooooot',
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 16,
+                      Text(
+                        user.isOnline ? 'Online' : 'Offline',
+                        style: TextStyle(
+                          color: user.isOnline ? Colors.green : Colors.grey,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<List<Message>>(
+                  stream: ref.read(chatRepositoryProvider).allMessages,
+                  builder: (context, messageSnapshot) {
+                    print(
+                        'connectionState: ${messageSnapshot.connectionState}');
+                    if (messageSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (messageSnapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${messageSnapshot.error}'),
+                      );
+                    }
+
+                    if (messageSnapshot.hasData) {
+                      // Data pesan sudah ada, langsung bangun widget dengan data
+                      final List<Message> messages =
+                          messageSnapshot.data ?? <Message>[];
+                      return ListView.builder(
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) {
+                          final message = messages[index];
+                          final isSender = message.senderId == user.uid;
+                          final isFirstItem = index == 0;
+
+                          return MessageBox(
+                            text: message.content,
+                            senderName: isSender ? 'You' : user.name,
+                            isSender: isSender,
+                            isFirstItem: isFirstItem,
+                          );
+                        },
+                      );
+                    }
+
+                    return const Center(
+                      child: SizedBox(),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: TextField(
+                              controller: state.messageController,
+                              decoration: const InputDecoration(
+                                hintText: 'Ketik pesan...',
+                                border: InputBorder.none,
+                              ),
+                              style: const TextStyle(
+                                color: ThemeColor.primaryColor,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-              child: Row(
-                children: [
-                  const Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Ketik pesan...',
-                          border: InputBorder.none,
+                        IconButton(
+                          icon: const Icon(
+                            Icons.send,
+                            color: ThemeColor.primaryColor,
+                          ),
+                          onPressed: () async {
+                            final focusScope = FocusScope.of(context);
+                            await state.sendMessage(receiverId: user.uid);
+
+                            focusScope.unfocus();
+                          },
                         ),
-                        style: TextStyle(color: ThemeColor.primaryColor),
-                      ),
+                      ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.send,
-                      color: ThemeColor.primaryColor,
-                    ),
-                    onPressed: () {
-                      // Tambahkan logika untuk mengirim pesan di sini
-                    },
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
-
-  // Fungsi untuk mendapatkan pesan berdasarkan messageId
-  ChatMessage? getMessageById(String messageId) {
-    // Implementasikan logika untuk mendapatkan pesan dari daftar pesan berdasarkan messageId
-    // Misalnya, Anda dapat mencari pesan dalam daftar pesan Anda.
-    // Jika pesan ditemukan, kembalikan objek pesan; jika tidak, kembalikan null.
-    // Contoh implementasi:
-    for (var message in messageList) {
-      if (message.id == messageId) {
-        return message;
-      }
-    }
-    return null; // Pesan tidak ditemukan.
-  }
 }
-
-class ChatMessage {
-  final String id;
-  final String senderName;
-  final String text;
-  final DateTime timestamp;
-
-  ChatMessage({
-    required this.id,
-    required this.senderName,
-    required this.text,
-    required this.timestamp,
-  });
-}
-
-final List<ChatMessage> messageList = [
-  ChatMessage(
-    id: '1',
-    senderName: 'Alice',
-    text: 'Halo, apa kabar? tes 1 2 3',
-    timestamp: DateTime.now().subtract(Duration(hours: 2)),
-  ),
-  ChatMessage(
-    id: '2',
-    senderName: 'Bob',
-    text: 'Hai! Saya baik. Bagaimana denganmu?',
-    timestamp: DateTime.now().subtract(Duration(hours: 1)),
-  ),
-  // Tambahkan pesan lainnya di sini
-];

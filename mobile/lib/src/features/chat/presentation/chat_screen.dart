@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/features/authentication/data/firebase_auth_repository.dart';
+import 'package:mobile/src/features/chat/data/chat_repository.dart';
+import 'package:mobile/src/features/chat/presentation/user_item.dart';
 import 'package:mobile/src/routing/app_router.dart';
-import 'package:mobile/src/routing/navigation_bar_controller.dart';
+import 'package:mobile/src/features/chat/domain/user.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Dummy data untuk daftar pesan
-    final List<Message> messages = [
-      Message('1', 'A', 'Alice', 'Halo apa kabar?'),
-      Message('2', 'B', 'Bob', 'Hai! Saya baik. Bagaimana denganmu?'),
-      // Tambahkan pesan lainnya di sini
-    ];
+    final chatRepository = ref.watch(chatRepositoryProvider);
+    chatRepository.getAllUsers();
 
     return MaterialApp(
       home: Scaffold(
@@ -46,45 +45,35 @@ class ChatScreen extends ConsumerWidget {
             ),
           ],
         ),
-        body: ListView.separated(
-          itemCount: messages.length,
-          separatorBuilder: (context, index) {
-            return const Divider(
-              thickness: 1.0,
-            );
-          },
-          itemBuilder: (BuildContext context, int index) {
-            final message = messages[index];
-            return ListTile(
-              leading: CircleAvatar(
-                child: Text(message.avatar),
-              ),
-              title: Text(message.senderName),
-              subtitle: Text(message.messagePreview),
-              // Tambahkan logika untuk menavigasi ke obrolan penuh di sini
-              onTap: () {
-                ref.read(navigationBarControllerProvider.notifier).hideNavBar();
-                context.goNamed(AppRoute.chatDetail.name,
-                    pathParameters: {'messageId': message.id});
-              },
-            );
+        body: StreamBuilder<List<User>>(
+          stream: chatRepository.allUsers,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final users = snapshot.data!;
+
+              return ListView.separated(
+                itemCount: users.length,
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                separatorBuilder: (context, index) => const Divider(
+                  thickness: 1.0,
+                ),
+                itemBuilder: (BuildContext context, int index) =>
+                    users[index].uid !=
+                            ref.watch(firebaseAuthProvider).currentUser?.uid
+                        ? UserItem(user: users[index])
+                        : const SizedBox(),
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
           },
         ),
       ),
     );
   }
-}
-
-class Message {
-  final String id;
-  final String avatar;
-  final String senderName;
-  final String messagePreview;
-
-  Message(
-    this.id,
-    this.avatar,
-    this.senderName,
-    this.messagePreview,
-  );
 }

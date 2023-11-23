@@ -158,13 +158,14 @@ GoRouter goRouter(GoRouterRef ref) {
                 ),
                 routes: [
                   GoRoute(
-                    path: ':messageId',
+                    path: ':userId',
                     name: AppRoute.chatDetail.name,
                     pageBuilder: (context, state) {
-                      final messageId = state.pathParameters['messageId']!;
+                      final userId = state.pathParameters['userId']!;
                       return MaterialPage(
                         child: ChatDetailScreen(
-                          messageId: messageId,
+                          userId: userId,
+                          messageId: '',
                         ),
                       );
                     },
