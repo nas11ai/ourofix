@@ -2,6 +2,8 @@ const { Model, DataTypes } = require('sequelize');
 
 const { sequelize } = require('../../../configs/db');
 
+const DeviceType = require('./device_type');
+
 class Order extends Model { }
 
 Order.init({
@@ -65,7 +67,7 @@ Order.init({
   },
   status_transaksi: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   sequelize,
@@ -78,6 +80,18 @@ Order.init({
       fields: ['id'],
     },
   ],
+});
+
+DeviceType.hasMany(Order, {
+  foreignKey: 'device_type_id',
+  as: 'orders',
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Order.belongsTo(DeviceType, {
+  foreignKey: 'device_type_id',
+  as: 'device_type',
 });
 
 module.exports = Order;

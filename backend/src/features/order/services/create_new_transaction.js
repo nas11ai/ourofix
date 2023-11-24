@@ -27,7 +27,7 @@ const createNewTransaction = async (req) => {
     });
   }
 
-  order.status_transaksi = chargeResponse.transaction_status;
+  order.status_transaksi = 'success';
   order.response_midtrans = JSON.stringify(chargeResponse);
 
   order.save();
