@@ -21,18 +21,8 @@ module.exports = {
       allowNull: true,
     });
     await queryInterface.addColumn('orders', 'status_transaksi', {
-      type: DataTypes.ENUM('Belum dibayar', 'Diproses', 'Berhasil', 'Gagal'),
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'Belum dibayar',
-      validate: {
-        notNull: {
-          msg: 'Status transaksi tidak boleh kosong!',
-        },
-        isIn: {
-          args: [['Belum dibayar', 'Diproses', 'Berhasil', 'Gagal']],
-          msg: 'Status transaksi tidak valid!',
-        },
-      },
     });
   },
   down: async ({ context: queryInterface }) => {

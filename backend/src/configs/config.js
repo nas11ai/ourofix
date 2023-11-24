@@ -15,4 +15,6 @@ module.exports = {
   TOKEN_ISSUER: process.env.TOKEN_ISSUER,
   TOKEN_AUDIENCE: process.env.TOKEN_AUDIENCE,
   REDIS_URL: process.env.REDIS_URL,
+  MIDTRANS_CLIENT_KEY: process.env.MIDTRANS_CLIENT_KEY,
+  MIDTRANS_SERVER_KEY: process.env.MIDTRANS_SERVER_KEY,
 };
