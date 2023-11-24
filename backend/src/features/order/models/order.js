@@ -45,6 +45,19 @@ Order.init({
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  status: {
+    type: DataTypes.ENUM('Sedang dalam antrian', 'Sedang diperbaiki', 'Selesai'),
+    allowNull: false,
+    validate: {
+      notNull: {
+        msg: 'Status perbaikan tidak boleh kosong!',
+      },
+      isIn: {
+        args: [['Sedang dalam antrian', 'Sedang diperbaiki', 'Selesai']],
+        msg: 'Status perbaikan tidak valid!',
+      },
+    },
+  },
 }, {
   sequelize,
   underscored: true,
