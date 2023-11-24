@@ -5,6 +5,7 @@ class User {
   final String name;
   // final String email;
   final String image;
+  final String role;
   final String messagePreview;
   final DateTime lastActive;
   final bool isOnline;
@@ -14,6 +15,7 @@ class User {
     required this.name,
     // required this.email,
     required this.image,
+    required this.role,
     required this.lastActive,
     this.messagePreview = '',
     this.isOnline = false,
@@ -23,6 +25,7 @@ class User {
         uid: json['uid'],
         name: json['displayName'],
         image: json['profilePictureUrl'],
+        role: json['role'],
         lastActive: (json['lastActive'] as Timestamp).toDate(),
         messagePreview: json['messagePreview'] ?? '',
         isOnline: json['isOnline'] ?? false,

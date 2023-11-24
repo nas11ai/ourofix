@@ -3,21 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/src/common_widgets/custom_textformfield.dart';
 import 'package:mobile/src/constants/theme_colors.dart';
+import 'package:mobile/src/features/profile/data/profile_repository.dart';
 import 'package:mobile/src/routing/navigation_bar_controller.dart';
 
 class EditUsernameScreen extends ConsumerStatefulWidget {
-  const EditUsernameScreen({super.key});
+  const EditUsernameScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<EditUsernameScreen> createState() => _EditUsernameScreenState();
+  _EditUsernameScreenState createState() => _EditUsernameScreenState();
 }
 
 class _EditUsernameScreenState extends ConsumerState<EditUsernameScreen> {
   final TextEditingController _editUsernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final profileRepository = ref.watch(profileRepositoryProvider);
+
     return MaterialApp(
-      title: 'Hello World Flutter',
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -27,18 +30,42 @@ class _EditUsernameScreenState extends ConsumerState<EditUsernameScreen> {
               .titleLarge!
               .copyWith(color: ThemeColor.primaryColor),
           leading: IconButton(
-              onPressed: () {
+            onPressed: () async {
+              final newUsername = _editUsernameController.text.trim();
+
+              if (newUsername.isEmpty && context.mounted) {
+                ref.read(navigationBarControllerProvider.notifier).showNavBar();
+                context.pop();
+              }
+
+              if (newUsername.isNotEmpty) {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+                await profileRepository.updateUserName(newUsername);
+
+                scaffoldMessenger.showSnackBar(
+                  const SnackBar(
+                    content: Text('Username updated successfully'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+
                 if (context.mounted) {
+                  ref
+                      .read(navigationBarControllerProvider.notifier)
+                      .showNavBar();
                   ref
                       .read(navigationBarControllerProvider.notifier)
                       .showNavBar();
                   context.pop();
                 }
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                color: ThemeColor.primaryColor,
-              )),
+              }
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: ThemeColor.primaryColor,
+            ),
+          ),
           title: const Text('Ganti Username'),
         ),
         body: Padding(
@@ -46,7 +73,7 @@ class _EditUsernameScreenState extends ConsumerState<EditUsernameScreen> {
           child: CustomTextField(
             controller: _editUsernameController,
             labelText: 'Username',
-            hintText: 'john_doe',
+            hintText: '',
           ),
         ),
       ),
