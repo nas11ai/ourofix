@@ -74,6 +74,7 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,

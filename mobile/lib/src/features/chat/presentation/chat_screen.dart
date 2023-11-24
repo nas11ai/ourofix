@@ -17,6 +17,7 @@ class ChatScreen extends ConsumerWidget {
     chatRepository.getAllUsers();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,

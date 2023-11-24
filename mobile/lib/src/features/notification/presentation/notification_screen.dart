@@ -19,6 +19,7 @@ class NotificationScreen extends ConsumerWidget {
     ];
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
             leading: IconButton(

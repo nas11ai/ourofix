@@ -21,6 +21,7 @@ class _EditUsernameScreenState extends ConsumerState<EditUsernameScreen> {
     final profileRepository = ref.watch(profileRepositoryProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
