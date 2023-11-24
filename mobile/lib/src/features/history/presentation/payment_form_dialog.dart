@@ -80,9 +80,47 @@ class _PaymentFormDialogState extends State<PaymentFormDialog> {
             };
 
             final navigator = Navigator.of(context);
+            final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-            await submitTransaction(requestBody);
-            navigator.pop();
+            try {
+              // Menampilkan indikator loading
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(width: 16),
+                      Text('Melakukan transaksi...'),
+                    ],
+                  ),
+                ),
+              );
+
+              // Memanggil fungsi untuk submit transaksi
+              await submitTransaction(requestBody);
+
+              // Menampilkan snackbar berhasil
+              scaffoldMessenger.showSnackBar(
+                const SnackBar(
+                  content: Text('Pembayaran berhasil!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+
+              // Menutup halaman
+              navigator.pop();
+            } catch (e) {
+              // Menampilkan snackbar error
+              scaffoldMessenger.showSnackBar(
+                SnackBar(
+                  content: Text('Error dalam membuat transaksi: $e'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            } finally {
+              // Menyembunyikan indikator loading
+              scaffoldMessenger.hideCurrentSnackBar();
+            }
           },
           child: const Text('Bayar'),
         ),
@@ -93,11 +131,5 @@ class _PaymentFormDialogState extends State<PaymentFormDialog> {
 
 Future<void> submitTransaction(Map<String, dynamic> requestBody) async {
   final repository = OrderRepository(Dio());
-
-  try {
-    await repository.submitTransaction(requestBody: requestBody);
-  } catch (error) {
-    // Handle errors
-    print("Error submitting transaction: $error");
-  }
+  await repository.submitTransaction(requestBody: requestBody);
 }

@@ -47,10 +47,39 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           height: MediaQuery.of(context).size.height * 0.07,
           child: FittedBox(
             child: FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+                // Menampilkan indikator loading
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16),
+                        Text('Mengirim pesanan...'),
+                      ],
+                    ),
+                  ),
+                );
+
                 try {
-                  _submitOrder();
+                  // Memanggil fungsi untuk mengirim pesanan
+                  await _submitOrder();
+
+                  // Menampilkan snackbar berhasil
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('Pesanan berhasil dibuat!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+
                   if (context.mounted) {
+                    // Menyembunyikan indikator loading
+                    scaffoldMessenger.hideCurrentSnackBar();
+
+                    // Membersihkan dan memperbarui tampilan navbar
                     ref.read(selectedIndexControllerProvider.notifier).clear();
                     ref
                         .read(selectedIndexControllerProvider.notifier)
@@ -58,7 +87,16 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     context.pop();
                   }
                 } catch (e) {
-                  print('error submitting order: $e');
+                  // Menampilkan snackbar error
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text('Error dalam membuat pesanan: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+
+                  // Menyembunyikan indikator loading
+                  scaffoldMessenger.hideCurrentSnackBar();
                 }
               },
               backgroundColor: ThemeColor.primaryColor,

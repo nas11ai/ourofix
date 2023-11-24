@@ -165,15 +165,57 @@ class ProfileScreen extends ConsumerWidget {
                                   size: MediaQuery.sizeOf(context).width * 0.06,
                                 ),
                                 onPressed: () async {
-                                  final imageFile = await pickImage(context);
-                                  print("imageFile: $imageFile");
-                                  if (imageFile != null) {
-                                    await ref
-                                        .watch(profileRepositoryProvider)
-                                        .uploadImage(imageFile);
-                                    ref
-                                        .read(profileRepositoryProvider)
-                                        .currentUser;
+                                  final scaffoldMessenger =
+                                      ScaffoldMessenger.of(context);
+                                  try {
+                                    final imageFile = await pickImage(context);
+                                    if (imageFile != null) {
+                                      // Show loading indicator
+                                      scaffoldMessenger.showSnackBar(
+                                        const SnackBar(
+                                          content: Row(
+                                            children: [
+                                              CircularProgressIndicator(),
+                                              SizedBox(width: 16),
+                                              Text('Sedang upload gambar...'),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+
+                                      await ref
+                                          .watch(profileRepositoryProvider)
+                                          .uploadImage(imageFile);
+
+                                      // Hide loading indicator
+                                      scaffoldMessenger.hideCurrentSnackBar();
+
+                                      // Show success snackbar
+                                      scaffoldMessenger.showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Berhasil mengganti foto profil'),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+
+                                      // Update user information
+                                      ref
+                                          .read(profileRepositoryProvider)
+                                          .currentUser;
+                                    }
+                                  } catch (error) {
+                                    // Hide loading indicator
+                                    scaffoldMessenger.hideCurrentSnackBar();
+
+                                    // Show error snackbar
+                                    scaffoldMessenger.showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Error uploading image: $error'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
                                   }
                                 },
                               ),
@@ -254,16 +296,54 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                           ),
                           onPressed: () async {
-                            final isLoggedInGoogle =
-                                await googleSignIn.isSignedIn();
-                            if (isLoggedInGoogle) {
-                              await googleSignIn.disconnect();
-                            }
+                            final scaffoldMessenger =
+                                ScaffoldMessenger.of(context);
 
-                            await ref.read(firebaseAuthProvider).signOut();
+                            // Menampilkan indikator loading
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                content: Row(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(width: 16),
+                                    Text('Logging out...'),
+                                  ],
+                                ),
+                              ),
+                            );
 
-                            if (context.mounted) {
-                              context.goNamed(AppRoute.login.name);
+                            try {
+                              final isLoggedInGoogle =
+                                  await googleSignIn.isSignedIn();
+                              if (isLoggedInGoogle) {
+                                await googleSignIn.disconnect();
+                              }
+
+                              await ref.read(firebaseAuthProvider).signOut();
+
+                              // Menampilkan snackbar berhasil
+                              scaffoldMessenger.showSnackBar(
+                                const SnackBar(
+                                  content: Text('Logout berhasil!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+
+                              if (context.mounted) {
+                                context.goNamed(AppRoute.login.name);
+                              }
+                            } catch (e) {
+                              // Menampilkan snackbar error
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(
+                                  content:
+                                      Text('Error dalam proses logout: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } finally {
+                              // Menyembunyikan indikator loading
+                              scaffoldMessenger.hideCurrentSnackBar();
                             }
                           },
                         ),

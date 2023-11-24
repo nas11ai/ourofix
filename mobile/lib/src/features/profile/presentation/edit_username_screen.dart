@@ -42,23 +42,52 @@ class _EditUsernameScreenState extends ConsumerState<EditUsernameScreen> {
               if (newUsername.isNotEmpty) {
                 final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-                await profileRepository.updateUserName(newUsername);
-
+                // Menampilkan indikator loading
                 scaffoldMessenger.showSnackBar(
-                  const SnackBar(
-                    content: Text('Username updated successfully'),
-                    duration: Duration(seconds: 2),
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(width: 16),
+                        Text('Mengubah username...'),
+                      ],
+                    ),
                   ),
                 );
 
-                if (context.mounted) {
-                  ref
-                      .read(navigationBarControllerProvider.notifier)
-                      .showNavBar();
-                  ref
-                      .read(navigationBarControllerProvider.notifier)
-                      .showNavBar();
-                  context.pop();
+                try {
+                  // Memanggil fungsi untuk memperbarui username
+                  await profileRepository.updateUserName(newUsername);
+
+                  // Menampilkan snackbar berhasil
+                  scaffoldMessenger.showSnackBar(
+                    const SnackBar(
+                      content: Text('Berhasil mengubah username!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+
+                  if (context.mounted) {
+                    // Menyembunyikan indikator loading
+                    scaffoldMessenger.hideCurrentSnackBar();
+
+                    // Melakukan navigasi dan menampilkan kembali navbar
+                    ref
+                        .read(navigationBarControllerProvider.notifier)
+                        .showNavBar();
+                    context.pop();
+                  }
+                } catch (e) {
+                  // Menampilkan snackbar error
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text('Error ketika mengubah username: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+
+                  // Menyembunyikan indikator loading
+                  scaffoldMessenger.hideCurrentSnackBar();
                 }
               }
             },
