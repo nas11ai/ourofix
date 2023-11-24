@@ -58,6 +58,20 @@ Future<void> signInWithGoogle(SignInWithGoogleRef ref) async {
       .read(authRepositoryProvider)
       .isUserExist(uid: userCredential.user!.uid);
 
+  String? token =
+      await ref.read(firebaseAuthProvider).currentUser!.getIdToken(true);
+
+  while (token != null && token.length > 0) {
+    int initLength = (token.length >= 500 ? 500 : token.length);
+    print(token.substring(0, initLength));
+    int endLength = token.length;
+    token = token.substring(initLength, endLength);
+
+    if (token.isEmpty) {
+      break;
+    }
+  }
+
   if (!isUserExist) {
     await ref.read(authRepositoryProvider).addNewUser(
           uid: userCredential.user!.uid,

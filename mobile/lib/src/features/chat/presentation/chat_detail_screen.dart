@@ -177,6 +177,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                       final List<Message> messages =
                           messageSnapshot.data ?? <Message>[];
                       return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
                           final message = messages[index];

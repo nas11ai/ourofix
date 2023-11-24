@@ -56,9 +56,9 @@ class ChatScreenController {
 
     final tes2 = await _firestore
         .collection('users')
-        .doc(_firebaseAuth.currentUser!.uid)
-        .collection('chat')
         .doc(receiverId)
+        .collection('chat')
+        .doc(_firebaseAuth.currentUser!.uid)
         .collection('messages')
         .add(message.toJson());
 
