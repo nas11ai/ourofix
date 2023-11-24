@@ -97,20 +97,6 @@ class ChatRepository {
     _singleUserController.close();
     _messagesController.close();
   }
-
-  // Future<model.User> getUserByUid(String uid) async {
-  //   final snapshot = await _firestore.collection('users').doc(uid).get();
-  //   if (!snapshot.exists) {
-  //     throw Exception('model.User not found');
-  //   }
-
-  //   final Map<String, dynamic>? userData = snapshot.data();
-  //   if (userData == null) {
-  //     throw Exception('model.User data is null');
-  //   }
-
-  //   return model.User.fromJson(userData);
-  // }
 }
 
 @Riverpod(keepAlive: true)

@@ -40,7 +40,7 @@ class ChatScreenController {
     required String receiverId,
     required Message message,
   }) async {
-    final tes = await _firestore
+    final tes1 = await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser!.uid)
         .collection('chat')
@@ -48,11 +48,25 @@ class ChatScreenController {
         .collection('messages')
         .add(message.toJson());
 
-    print('tes: $tes');
+    print('tes1: $tes1');
 
     // Tampilkan dokumen yang baru saja ditambahkan
-    final DocumentSnapshot<Map<String, dynamic>> snapshot = await tes.get();
-    print('Data dokumen baru: ${snapshot.data()}');
+    final DocumentSnapshot<Map<String, dynamic>> snapshot1 = await tes1.get();
+    print('Data dokumen baru sender: ${snapshot1.data()}');
+
+    final tes2 = await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser!.uid)
+        .collection('chat')
+        .doc(receiverId)
+        .collection('messages')
+        .add(message.toJson());
+
+    print('tes2: $tes2');
+
+    // Tampilkan dokumen yang baru saja ditambahkan
+    final DocumentSnapshot<Map<String, dynamic>> snapshot2 = await tes2.get();
+    print('Data dokumen baru sender: ${snapshot2.data()}');
   }
 }
 
